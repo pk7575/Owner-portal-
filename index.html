@@ -1,1 +1,58 @@
-<!DOCTYPE html><html><head><title>Portal</title></head><body><h1>Welcome to the Portal</h1></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Owner Dashboard – Suriyawan Saffari</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: #f0f4f8;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px;
+    }
+    h1 {
+      color: #2c3e50;
+    }
+    .card {
+      background: white;
+      padding: 20px 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      width: 90%;
+      max-width: 500px;
+      margin-top: 20px;
+      text-align: center;
+    }
+    .status {
+      font-size: 18px;
+      margin-top: 10px;
+      color: green;
+    }
+    .footer {
+      margin-top: 40px;
+      font-size: 14px;
+      color: #888;
+    }
+  </style>
+</head>
+<body>
+  <h1>👑 Owner Control Panel</h1>
+
+  <div class="card">
+    <h2 id="welcome-msg">Connecting to backend...</h2>
+    <p>Real-time business analytics, seller activity, delivery tracking and more.</p>
+    <p class="status" id="status-msg">Checking backend connection...</p>
+  </div>
+
+  <div class="footer">
+    Powered by Suriyawan Saffari AI System
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
