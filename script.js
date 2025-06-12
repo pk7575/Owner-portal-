@@ -1,4 +1,3 @@
-// ✅ Updated script.js for Owner Portal
 const BASE_URL = "https://suriyawan-saffari-backend.onrender.com";
 
 // Example API call
