@@ -1,24 +1,28 @@
-// Owner Portal Script
+const BASE_URL = "https://suriyawan-saffari-backend.onrender.com"; // 🔁 Backend URL
 
-// 👇 Backend base URL (https://suriyawan-saffari-backend.onrender.com)
+document.getElementById("loginForm").addEventListener("submit", function (e) {
+  e.preventDefault();
 
-const BASE_URL = "https://suriyawan-saffari-backend.onrender.com";
+  const username = e.target.username.value;
+  const password = e.target.password.value;
 
-// Example - Owner Dashboard Load
-document.addEventListener("DOMContentLoaded", () => {
-  const welcome = document.getElementById("welcome-msg");
-  if (welcome) {
-    welcome.innerText = "👑 Owner Dashboard Connected to Backend!";
-  }
-
-  // Example - Fetch some data from backend
-  fetch(`${BASE_URL}/api/owner/stats`)
-    .then(res => res.json())
-    .then(data => {
-      console.log("📦 Owner Stats:", data);
+  fetch(`${BASE_URL}/api/owner/login`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ username, password }),
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      const msg = document.getElementById("login-message");
+      if (data.success) {
+        msg.innerText = "✅ Login successful!";
+        window.location.href = "index.html"; // Redirect
+      } else {
+        msg.innerText = "❌ Login failed: " + data.message;
+      }
     })
-    .catch(err => {
-      console.error("❌ Error connecting to backend:", err);
+    .catch((err) => {
+      console.error("Error:", err);
+      document.getElementById("login-message").innerText = "❌ Server error.";
     });
 });
-
