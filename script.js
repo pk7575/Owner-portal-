@@ -1,57 +1,55 @@
-const BASE_URL = "https://suriyawan-saffari-backend.onrender.com"; // 🔁 Backend URL
-
-document.getElementById("loginForm").addEventListener("submit", function (e) {
-  e.preventDefault();
-
-  const username = e.target.username.value;
-  const password = e.target.password.value;
-
-  fetch(`${BASE_URL}/api/owner/login`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ username, password }),
-  })
-    .then((res) => res.json())
-    .then((data) => {
-      const msg = document.getElementById("login-message");
-      if (data.success) {
-        msg.innerText = "✅ Login successful!";
-        window.location.href = "index.html"; // Redirect
-      } else {
-        msg.innerText = "❌ Login failed: " + data.message;
-      }
-    })
-    .catch((err) => {
-      console.error("Error:", err);
-      document.getElementById("login-message").innerText = "❌ Server error.";
-    });
-});
 // script.js
-const backendURL = "https://suriyawan-backend-1-qyuq..onrender.com"; // ✅ apna URL daaliye
 
-document.getElementById("loginForm").addEventListener("submit", function (e) {
-  e.preventDefault();
+document.addEventListener('DOMContentLoaded', () => {
+  const statusBox = document.getElementById('status-box');
+  statusBox.innerText = '🔄 Connecting to backend...';
 
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
+  // 👉 Replace this with your actual backend URL (Render ka URL)
+  const BACKEND_URL = ''https://suriyawan-backend-1-qyuq.onrender.com;
 
-  fetch(`${backendURL}/api/owner/login`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({ email, password })
-  })
-    .then(res => res.json())
+  // Check connection on load
+  fetch(`${BACKEND_URL}/api/owner/ping`)
+    .then(res => {
+      if (!res.ok) throw new Error('Backend not reachable');
+      return res.json();
+    })
     .then(data => {
-      if (data.success) {
-        alert("Login Successful");
-      } else {
-        alert("Login Failed");
-      }
+      statusBox.innerText = '✅ Connected to backend successfully!';
+      console.log('Backend Response:', data);
     })
     .catch(err => {
-      console.error("Error:", err);
-      alert("Server error");
+      statusBox.innerText = '❌ Backend not reachable. Please check again.';
+      console.error('Backend Error:', err.message);
     });
+
+  // Sample Login Handler (Owner Login)
+  document.getElementById('login-form')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const email = document.getElementById('email')?.value;
+    const password = document.getElementById('password')?.value;
+
+    try {
+      const response = await fetch(`${BACKEND_URL}/api/owner/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ email, password })
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        alert('✅ Login successful!');
+        // localStorage.setItem('token', result.token); // optional
+      } else {
+        alert('❌ Login failed: ' + result.message);
+      }
+
+    } catch (err) {
+      console.error('Error during login:', err);
+      alert('⚠️ Network error during login.');
+    }
+  });
 });
