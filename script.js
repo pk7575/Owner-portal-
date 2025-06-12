@@ -27,7 +27,7 @@ document.getElementById("loginForm").addEventListener("submit", function (e) {
     });
 });
 // script.js
-const backendURL = "https://suriyawan-backend-xxxxx.onrender.com"; // ✅ apna URL daaliye
+const backendURL = "https://suriyawan-backend-1-qyuq..onrender.com"; // ✅ apna URL daaliye
 
 document.getElementById("loginForm").addEventListener("submit", function (e) {
   e.preventDefault();
