@@ -2,58 +2,107 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Owner Dashboard – Suriyawan Saffari</title>
+  <title>Owner Login - Suriyawan Saffari</title>
   <style>
     body {
-      margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background: #f0f4f8;
-      color: #333;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 40px 20px;
-    }
-    h1 {
-      color: #2c3e50;
-    }
-    .card {
-      background: white;
-      padding: 20px 30px;
-      border-radius: 12px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-      width: 90%;
-      max-width: 500px;
-      margin-top: 20px;
+      font-family: Arial, sans-serif;
+      background-color: #f0f4f8;
       text-align: center;
+      padding: 50px;
     }
-    .status {
-      font-size: 18px;
-      margin-top: 10px;
-      color: green;
+    .login-box {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.1);
+      display: inline-block;
+      max-width: 400px;
+      width: 100%;
     }
-    .footer {
-      margin-top: 40px;
-      font-size: 14px;
-      color: #888;
+    .login-box h2 {
+      margin-bottom: 20px;
+    }
+    .user-box {
+      margin-bottom: 15px;
+      text-align: left;
+    }
+    .user-box input {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      margin-top: 5px;
+    }
+    button {
+      padding: 10px 20px;
+      background-color: #0070f3;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    #status-box {
+      margin-top: 20px;
+      font-weight: bold;
     }
   </style>
 </head>
 <body>
-  <h1>👑 Owner Control Panel</h1>
-
-  <div class="card">
-    <h2 id="welcome-msg">Connecting to backend...</h2>
-    <p>Real-time business analytics, seller activity, delivery tracking and more.</p>
-    <p class="status" id="status-msg">Checking backend connection...</p>
+  <div class="login-box">
+    <h2>👑 Owner Login</h2>
+    <form id="loginForm">
+      <div class="user-box">
+        <label>Username</label>
+        <input type="text" id="username" required />
+      </div>
+      <div class="user-box">
+        <label>Password</label>
+        <input type="password" id="password" required />
+      </div>
+      <button type="submit">Login</button>
+    </form>
+    <p id="login-message"></p>
   </div>
 
-  <div class="footer">
-    Powered by Suriyawan Saffari AI System
-  </div>
+  <div id="status-box">🔄 Connecting to backend...</div>
 
-  <script src="script.js"></script>
+  <script>
+    const BACKEND_URL = "https://suriyawan-backend-18.onrender.com";
+
+    // Check backend connection
+    fetch(`${BACKEND_URL}/api/owner/ping`)
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById('status-box').innerText = "✅ Backend से सफलतापूर्वक कनेक्ट हो गया!";
+      })
+      .catch(() => {
+        document.getElementById('status-box').innerText = "❌ Backend से कनेक्शन नहीं हो पाया।";
+      });
+
+    // Login form handler
+    document.getElementById("loginForm").addEventListener("submit", async function (e) {
+      e.preventDefault();
+      const username = document.getElementById("username").value;
+      const password = document.getElementById("password").value;
+
+      const res = await fetch(`${BACKEND_URL}/api/owner/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password }),
+      });
+
+      const data = await res.json();
+      const message = document.getElementById("login-message");
+
+      if (res.ok) {
+        message.innerText = "✅ लॉगिन सफल हुआ!";
+        message.style.color = "green";
+        // Token को localStorage में भी सेव कर सकते हैं यदि ज़रूरत हो
+      } else {
+        message.innerText = "❌ " + data.message;
+        message.style.color = "red";
+      }
+    });
+  </script>
 </body>
 </html>
-<div id="status-box" style="margin-top: 10px; color: green;"></div>
