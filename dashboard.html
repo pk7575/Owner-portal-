@@ -2,31 +2,149 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Owner Dashboard - Suriyawan Saffari</title>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet" />
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Roboto', sans-serif; }
-    body { background-color: #f4f6f9; padding: 2rem; color: #333; }
-    .dashboard { background: #fff; padding: 2rem; border-radius: 12px; max-width: 900px; margin: auto; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-    h1 { font-size: 2rem; color: #0050b3; margin-bottom: 1rem; }
-    .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 2rem; }
-    .card { background: #fafafa; border-left: 5px solid #1890ff; padding: 1rem; border-radius: 8px; transition: 0.3s ease; }
-    .card:hover { box-shadow: 0 6px 15px rgba(0,0,0,0.1); transform: translateY(-4px); }
-    footer { text-align: center; margin-top: 2rem; color: #888; }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Roboto', sans-serif;
+    }
+    body {
+      background: #f2f4f8;
+      color: #333;
+      padding: 2rem;
+    }
+    .dashboard {
+      max-width: 1000px;
+      margin: auto;
+      background: white;
+      border-radius: 12px;
+      padding: 2rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+      font-size: 2rem;
+      color: #0050b3;
+      margin-bottom: 1rem;
+    }
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+    .card {
+      background: #fafafa;
+      border-left: 5px solid #1890ff;
+      border-radius: 8px;
+      padding: 1rem 1.5rem;
+      transition: all 0.3s ease;
+    }
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+    }
+    .card h2 {
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+      color: #333;
+    }
+    .card p {
+      color: #555;
+      font-size: 1.2rem;
+    }
+    footer {
+      margin-top: 3rem;
+      text-align: center;
+      color: #888;
+    }
+    #logout-btn {
+      margin-top: 1rem;
+      padding: 0.5rem 1rem;
+      background: #d9363e;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      float: right;
+    }
   </style>
 </head>
 <body>
   <div class="dashboard">
     <h1>👑 Owner Dashboard - Suriyawan Saffari</h1>
-    <p>Welcome! Here's your business summary:</p>
+    <p>Welcome, Owner. Here's your business summary:</p>
+    <button id="logout-btn">Logout</button>
+
     <div class="stats">
-      <div class="card"><h2>📦 Total Orders</h2><p>1,245</p></div>
-      <div class="card"><h2>💰 Revenue</h2><p>₹3,57,000</p></div>
-      <div class="card"><h2>🚚 Delivery Boys</h2><p>15</p></div>
-      <div class="card"><h2>🛒 Sellers</h2><p>42</p></div>
+      <div class="card">
+        <h2>🔢 Total Orders</h2>
+        <p id="total-orders">Loading...</p>
+      </div>
+      <div class="card">
+        <h2>💰 Revenue</h2>
+        <p id="revenue">Loading...</p>
+      </div>
+      <div class="card">
+        <h2>🚚 Delivery Boys</h2>
+        <p id="delivery-boys">Loading...</p>
+      </div>
+      <div class="card">
+        <h2>🛒 Active Sellers</h2>
+        <p id="sellers">Loading...</p>
+      </div>
     </div>
   </div>
-  <footer>© 2025 Suriyawan Saffari. Built in India 🇮🇳</footer>
+
+  <footer>
+    &copy; 2025 Suriyawan Saffari. Built with 💙 in India.
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const token = localStorage.getItem('ownerToken');
+      const BACKEND_URL = 'https://suriyawan-backend-18.onrender.com';
+
+      if (!token) {
+        alert("⚠️ कृपया पहले लॉगिन करें।");
+        window.location.href = 'login.html';
+        return;
+      }
+
+      // Example: Protected API request
+      fetch(`${BACKEND_URL}/api/owner/stats`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      })
+      .then(res => {
+        if (res.status === 401) {
+          throw new Error("Token expired");
+        }
+        return res.json();
+      })
+      .then(data => {
+        document.getElementById('total-orders').innerText = data.orders || '0';
+        document.getElementById('revenue').innerText = data.revenue || '₹0';
+        document.getElementById('delivery-boys').innerText = data.deliveryBoys || '0';
+        document.getElementById('sellers').innerText = data.sellers || '0';
+      })
+      .catch(err => {
+        console.error("Fetch error:", err);
+        alert("⚠️ Session expired. Please login again.");
+        localStorage.removeItem('ownerToken');
+        window.location.href = 'login.html';
+      });
+
+      document.getElementById('logout-btn').addEventListener('click', () => {
+        localStorage.removeItem('ownerToken');
+        window.location.href = 'login.html';
+      });
+    });
+  </script>
 </body>
 </html>
