@@ -50,39 +50,21 @@
     .card h2 {
       font-size: 1.5rem;
       margin-bottom: 0.5rem;
-      color: #333;
     }
     .card p {
-      color: #555;
-      font-size: 1.2rem;
-    }
-    footer {
-      margin-top: 3rem;
-      text-align: center;
-      color: #888;
-    }
-    #logout-btn {
-      margin-top: 1rem;
-      padding: 0.5rem 1rem;
-      background: #d9363e;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      float: right;
+      font-size: 1.25rem;
+      color: #333;
     }
   </style>
 </head>
 <body>
   <div class="dashboard">
-    <h1>👑 Owner Dashboard - Suriyawan Saffari</h1>
-    <p>Welcome, Owner. Here's your business summary:</p>
-    <button id="logout-btn">Logout</button>
+    <h1>📊 Owner Dashboard</h1>
 
     <div class="stats">
       <div class="card">
-        <h2>🔢 Total Orders</h2>
-        <p id="total-orders">Loading...</p>
+        <h2>📦 Total Orders</h2>
+        <p id="orders">Loading...</p>
       </div>
       <div class="card">
         <h2>💰 Revenue</h2>
@@ -90,60 +72,34 @@
       </div>
       <div class="card">
         <h2>🚚 Delivery Boys</h2>
-        <p id="delivery-boys">Loading...</p>
+        <p id="deliveryBoys">Loading...</p>
       </div>
       <div class="card">
-        <h2>🛒 Active Sellers</h2>
+        <h2>🏬 Sellers</h2>
         <p id="sellers">Loading...</p>
       </div>
     </div>
   </div>
 
-  <footer>
-    &copy; 2025 Suriyawan Saffari. Built with 💙 in India.
-  </footer>
-
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const token = localStorage.getItem('ownerToken');
-      const BACKEND_URL = 'https://suriyawan-backend-18.onrender.com';
+    const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InByYWRlZXBzZXRoNjQ2IiwiaWF0IjoxNzQ5OTAwODYzLCJleHAiOjE3NDk5MDgwNjN9.aftPSSB861x789Dhnemyn-8hPa9I0gZYdn88gdXswE0";
 
-      if (!token) {
-        alert("⚠️ कृपया पहले लॉगिन करें।");
-        window.location.href = 'login.html';
-        return;
+    fetch("https://suriyawan-backend-18.onrender.com/api/owner/stats", {
+      method: "GET",
+      headers: {
+        "Authorization": "Bearer " + token
       }
-
-      // Example: Protected API request
-      fetch(`${BACKEND_URL}/api/owner/stats`, {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      })
-      .then(res => {
-        if (res.status === 401) {
-          throw new Error("Token expired");
-        }
-        return res.json();
-      })
-      .then(data => {
-        document.getElementById('total-orders').innerText = data.orders || '0';
-        document.getElementById('revenue').innerText = data.revenue || '₹0';
-        document.getElementById('delivery-boys').innerText = data.deliveryBoys || '0';
-        document.getElementById('sellers').innerText = data.sellers || '0';
-      })
-      .catch(err => {
-        console.error("Fetch error:", err);
-        alert("⚠️ Session expired. Please login again.");
-        localStorage.removeItem('ownerToken');
-        window.location.href = 'login.html';
-      });
-
-      document.getElementById('logout-btn').addEventListener('click', () => {
-        localStorage.removeItem('ownerToken');
-        window.location.href = 'login.html';
-      });
+    })
+    .then(res => res.json())
+    .then(data => {
+      document.getElementById("orders").textContent = data.orders;
+      document.getElementById("revenue").textContent = data.revenue;
+      document.getElementById("deliveryBoys").textContent = data.deliveryBoys;
+      document.getElementById("sellers").textContent = data.sellers;
+    })
+    .catch(error => {
+      console.error("Error fetching stats:", error);
+      alert("⚠️ Backend not responding or token expired!");
     });
   </script>
 </body>
