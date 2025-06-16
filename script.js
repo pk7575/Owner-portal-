@@ -21,7 +21,6 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    // 🔄 Optional: Disable button to prevent multi-click
     const submitButton = loginForm.querySelector("button[type='submit']");
     submitButton.disabled = true;
     submitButton.innerText = "⏳ Logging in...";
@@ -37,15 +36,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const data = await response.json();
 
-      if (data.success) {
+      if (response.ok && data.success) {
         // ✅ Login success
-        messageBox.innerText = data.message;
+        messageBox.innerText = data.message || "Login successful!";
         messageBox.style.color = "green";
 
-        // 💾 Store token securely
+        // 💾 Store token securely (OWNER only)
         localStorage.setItem("ownerToken", data.token);
-
-        // 🎯 Optional: Store owner data for future (if needed)
         localStorage.setItem("ownerData", JSON.stringify(data.owner || {}));
 
         statusBox.innerText = "✅ Login successful. Redirecting...";
@@ -53,8 +50,8 @@ document.addEventListener("DOMContentLoaded", () => {
           window.location.href = "dashboard.html";
         }, 1500);
       } else {
-        // ❌ Login failed
-        messageBox.innerText = data.message || "Login failed!";
+        // ❌ Login failed (even with 200 OK)
+        messageBox.innerText = data.message || "❌ Invalid credentials.";
         messageBox.style.color = "red";
       }
 
@@ -63,7 +60,6 @@ document.addEventListener("DOMContentLoaded", () => {
       messageBox.innerText = "❌ Server error. Please try again later.";
       messageBox.style.color = "red";
     } finally {
-      // 🔓 Re-enable button
       submitButton.disabled = false;
       submitButton.innerText = "Login";
     }
