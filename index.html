@@ -73,7 +73,7 @@
 <body>
   <div class="login-box">
     <h2>👑 Owner Panel Login</h2>
-    <form id="loginForm">
+    <form id="login-form">
       <div class="user-box">
         <label>Username</label>
         <input type="text" id="username" placeholder="Enter Username" required />
@@ -92,7 +92,7 @@
   <script>
     const BACKEND_URL = "https://suriyawan-backend-18.onrender.com";
 
-    // ✅ Check backend status
+    // ✅ Backend connectivity check
     fetch(`${BACKEND_URL}/api/owner/ping`)
       .then(res => res.json())
       .then(data => {
@@ -102,8 +102,8 @@
         document.getElementById('status-box').innerText = "❌ Failed to connect to backend.";
       });
 
-    // ✅ Login logic
-    document.getElementById("loginForm").addEventListener("submit", async function (e) {
+    // ✅ Login functionality
+    document.getElementById("login-form").addEventListener("submit", async function (e) {
       e.preventDefault();
       const username = document.getElementById("username").value.trim();
       const password = document.getElementById("password").value.trim();
@@ -128,6 +128,7 @@
           messageBox.innerText = "✅ Login successful! Redirecting...";
           messageBox.style.color = "green";
           localStorage.setItem("ownerToken", data.token);
+          localStorage.setItem("ownerData", JSON.stringify(data.owner || {}));
           setTimeout(() => {
             window.location.href = "dashboard.html";
           }, 1200);
