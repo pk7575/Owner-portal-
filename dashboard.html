@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <title>Owner Dashboard - Suriyawan Saffari</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet" />
   <style>
     * {
@@ -84,7 +85,7 @@
 <body>
   <div class="dashboard">
     <div class="logo">
-      <img src="../assets/logo.png" alt="Suriyawan Saffari Logo">
+      <img src="assets/logo.png" alt="Suriyawan Saffari Logo" />
     </div>
     <h1>📊 Owner Dashboard</h1>
 
@@ -143,7 +144,7 @@
       });
     }
 
-    // ✅ Logout button handler
+    // ✅ Logout handler
     document.getElementById("logout-btn").addEventListener("click", () => {
       if (confirm("🚪 Do you really want to logout?")) {
         localStorage.removeItem("ownerToken");
