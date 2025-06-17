@@ -16,21 +16,18 @@ document.addEventListener("DOMContentLoaded", () => {
       "Authorization": `Bearer ${token}`
     }
   })
-  .then(res => {
-    if (!res.ok) throw new Error("Invalid response");
-    return res.json();
-  })
-  .then(data => {
-    if (!data.success) {
+    .then(res => res.json())
+    .then(data => {
+      if (!data.success) {
+        localStorage.removeItem("ownerToken");
+        alert("🔐 Session expired or invalid token.\nPlease login again.");
+        window.location.href = "index.html";
+      }
+    })
+    .catch(err => {
+      console.error("Token verification failed:", err);
+      alert("⚠️ Connection issue or invalid response.\nRedirecting to login.");
       localStorage.removeItem("ownerToken");
-      alert("🔐 Session expired or invalid token.\nPlease login again.");
       window.location.href = "index.html";
-    }
-  })
-  .catch(err => {
-    console.error("Token verification failed:", err);
-    alert("⚠️ Connection issue or invalid response.\nRedirecting to login.");
-    localStorage.removeItem("ownerToken");
-    window.location.href = "index.html";
-  });
+    });
 });
